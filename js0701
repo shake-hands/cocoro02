@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSVファイルを読み込んでテーブル表示</title>
+    <style>
+        table {
+            border-collapse: collapse;
+            width: 50%;
+            margin: 20px auto;
+        }
+        table, th, td {
+            border: 1px solid black;
+        }
+        th, td {
+            padding: 8px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <h1>CSVファイルをテーブルとして表示</h1>
+
+    <!-- CSVファイルを選択するためのフォーム -->
+    <input type="file" id="csv-file" accept=".csv" />
+    <h3>選択されたCSVファイルの内容:</h3>
+    
+    <table id="csv-table">
+        <thead>
+            <tr>
+                <th>番号</th>
+                <th>masa</th>
+                <th>nobu</th>
+                <th>tomo</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- データがここに挿入されます -->
+        </tbody>
+    </table>
+
+    <script>
+        // ファイルを読み込む関数
+        document.getElementById('csv-file').addEventListener('change', function(event) {
+            const file = event.target.files[0];
+
+            if (!file) return;
+
+            const reader = new FileReader();
+
+            reader.onload = function(e) {
+                const csvData = e.target.result;
+                const parsedData = parseCSV(csvData);
+                displayTable(parsedData);
+            };
+
+            reader.readAsText(file);
+        });
+
+        // CSVを配列に変換する関数
+        function parseCSV(csv) {
+            const rows = csv.trim().split('\n');
+            const data = rows.map(row => row.split(','));
+            return data;
+        }
+
+        // テーブルにデータを挿入する関数
+        function displayTable(data) {
+            const tableBody = document.querySelector('#csv-table tbody');
+            tableBody.innerHTML = '';  // 既存のテーブル内容をクリア
+
+            data.forEach((row, index) => {
+                const tr = document.createElement('tr');
+                row.forEach(cell => {
+                    const td = document.createElement('td');
+                    td.textContent = cell;
+                    tr.appendChild(td);
+                });
+                tableBody.appendChild(tr);
+            });
+        }
+    </script>
+</body>
+</html>
